@@ -100,7 +100,15 @@ def regularized_gradiant(X, w, b, y, lambda_):
 
 # Gradient Descent
 def gradient_descent(
-    X, w, b, y, alpha=0.1, gradiant_=calculate_gradiant, cost_=calculate_cost, iter=1000, lambda_=0
+    X,
+    w,
+    b,
+    y,
+    alpha=0.1,
+    gradiant_=calculate_gradiant,
+    cost_=calculate_cost,
+    iter=1000,
+    lambda_=0,
 ):
     n = X.shape[1]
     J_history = []
@@ -110,7 +118,7 @@ def gradient_descent(
             dj_dw, dj_db = gradiant_(X, w, b, y, lambda_=lambda_)
         except TypeError:
             dj_dw, dj_db = gradiant_(X, w, b, y)
-            
+
         for j in range(n):
             w[j] = w[j] - alpha * dj_dw[j]
         b = b - alpha * dj_db
@@ -334,28 +342,25 @@ for l in lambdas:
     w_init = np.zeros(X_train_scaled.shape[1])
     b_init = 0
     w_reg, b_reg, J_reg = gradient_descent(
-        X_train_scaled, 
-        w_init, 
-        b_init, 
-        y_train, 
-        alpha=0.01, 
-        gradiant_=regularized_gradiant, 
-        cost_=regularized_cost, 
-        iter=5000, 
-        lambda_=l
+        X_train_scaled,
+        w_init,
+        b_init,
+        y_train,
+        alpha=0.01,
+        gradiant_=regularized_gradiant,
+        cost_=regularized_cost,
+        iter=5000,
+        lambda_=l,
     )
-    
+
     y_pred_reg = classify(prediction(X_test_scaled, w_reg, b_reg))
     acc_reg = np.sum(y_pred_reg == y_test) / len(y_test) * 100
-    
-    reg_results[l] = {
-        'w': w_reg,
-        'b': b_reg,
-        'acc': acc_reg,
-        'history': J_reg
-    }
-    
-    print(f"Lambda = {l:3d} | Weights: {w_reg} | Bias: {b_reg:6.4f} | Accuracy: {acc_reg:6.2f}%")
+
+    reg_results[l] = {"w": w_reg, "b": b_reg, "acc": acc_reg, "history": J_reg}
+
+    print(
+        f"Lambda = {l:3d} | Weights: {w_reg} | Bias: {b_reg:6.4f} | Accuracy: {acc_reg:6.2f}%"
+    )
 
 # 2. Plot Regularization Effects
 plt.figure(figsize=(15, 5))
@@ -363,7 +368,7 @@ plt.figure(figsize=(15, 5))
 # Plot 1: Cost Histories for different lambdas
 plt.subplot(1, 2, 1)
 for l in lambdas:
-    plt.plot(reg_results[l]['history'], label=f"lambda={l}")
+    plt.plot(reg_results[l]["history"], label=f"lambda={l}")
 plt.title("Regularized Cost History")
 plt.xlabel("Iteration")
 plt.ylabel("Cost")
@@ -371,21 +376,37 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 
 # Plot 2: Decision Boundary Comparison
-# Since we are using scaled data, we need to be careful with plotting. 
+# Since we are using scaled data, we need to be careful with plotting.
 # We'll plot on the scaled feature space for simplicity in comparing boundaries.
 plt.subplot(1, 2, 2)
 # Scatter plot of scaled test data
-plt.scatter(X_test_scaled[y_test == 0][:, 0], X_test_scaled[y_test == 0][:, 1], color="blue", alpha=0.3, label="Succeed (0)")
-plt.scatter(X_test_scaled[y_test == 1][:, 0], X_test_scaled[y_test == 1][:, 1], color="red", alpha=0.3, label="Fail (1)")
+plt.scatter(
+    X_test_scaled[y_test == 0][:, 0],
+    X_test_scaled[y_test == 0][:, 1],
+    color="blue",
+    alpha=0.3,
+    label="Succeed (0)",
+)
+plt.scatter(
+    X_test_scaled[y_test == 1][:, 0],
+    X_test_scaled[y_test == 1][:, 1],
+    color="red",
+    alpha=0.3,
+    label="Fail (1)",
+)
 
-x0_range = np.linspace(X_test_scaled[:, 0].min() - 0.5, X_test_scaled[:, 0].max() + 0.5, 100)
-colors = ['green', 'orange', 'purple']
+x0_range = np.linspace(
+    X_test_scaled[:, 0].min() - 0.5, X_test_scaled[:, 0].max() + 0.5, 100
+)
+colors = ["green", "orange", "purple"]
 for i, l in enumerate(lambdas):
-    w_r = reg_results[l]['w']
-    b_r = reg_results[l]['b']
+    w_r = reg_results[l]["w"]
+    b_r = reg_results[l]["b"]
     if w_r[1] != 0:
         x1_boundary = (-w_r[0] * x0_range - b_r) / w_r[1]
-        plt.plot(x0_range, x1_boundary, color=colors[i], label=f"lambda={l}", linewidth=2)
+        plt.plot(
+            x0_range, x1_boundary, color=colors[i], label=f"lambda={l}", linewidth=2
+        )
 
 plt.title("Decision Boundaries (Scaled Space)")
 plt.xlabel("Payload Size (Scaled)")
@@ -416,15 +437,15 @@ X_test_poly_scaled = scale_features(X_test_poly, mu_poly, sigma_poly)
 w_poly_init = np.zeros(X_train_poly_scaled.shape[1])
 b_poly_init = 0
 w_poly, b_poly, J_poly = gradient_descent(
-    X_train_poly_scaled, 
-    w_poly_init, 
-    b_poly_init, 
-    y_train, 
-    alpha=0.01, 
-    gradiant_=regularized_gradiant, 
-    cost_=regularized_cost, 
-    iter=5000, 
-    lambda_=10
+    X_train_poly_scaled,
+    w_poly_init,
+    b_poly_init,
+    y_train,
+    alpha=0.01,
+    gradiant_=regularized_gradiant,
+    cost_=regularized_cost,
+    iter=5000,
+    lambda_=10,
 )
 
 # 4. Accuracy
@@ -436,13 +457,27 @@ print(f"Polynomial Model Accuracy (lambda=10): {acc_poly:.2f}%")
 plt.figure(figsize=(8, 6))
 
 # Scatter original training data
-plt.scatter(X_train[y_train == 0][:, 0], X_train[y_train == 0][:, 1], color="blue", alpha=0.5, label="Succeed (0)")
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color="red", alpha=0.5, label="Fail (1)")
+plt.scatter(
+    X_train[y_train == 0][:, 0],
+    X_train[y_train == 0][:, 1],
+    color="blue",
+    alpha=0.5,
+    label="Succeed (0)",
+)
+plt.scatter(
+    X_train[y_train == 1][:, 0],
+    X_train[y_train == 1][:, 1],
+    color="red",
+    alpha=0.5,
+    label="Fail (1)",
+)
 
 # Create a mesh grid
 x0_min, x0_max = X_train[:, 0].min() - 1, X_train[:, 0].max() + 1
 x1_min, x1_max = X_train[:, 1].min() - 1, X_train[:, 1].max() + 1
-xx0, xx1 = np.meshgrid(np.linspace(x0_min, x0_max, 100), np.linspace(x1_min, x1_max, 100))
+xx0, xx1 = np.meshgrid(
+    np.linspace(x0_min, x0_max, 100), np.linspace(x1_min, x1_max, 100)
+)
 
 # Map grid points to polynomial features and scale them
 grid_points = np.c_[xx0.ravel(), xx1.ravel()]
@@ -454,9 +489,9 @@ Z = prediction(grid_poly_scaled, w_poly, b_poly)
 Z = Z.reshape(xx0.shape)
 
 # Plot the contour at 0.5 (Decision Boundary)
-plt.contour(xx0, xx1, Z, levels=[0.5], colors='green', linewidths=3)
+plt.contour(xx0, xx1, Z, levels=[0.5], colors="green", linewidths=3)
 # Add a dummy line for the legend
-plt.plot([], [], color='green', linewidth=3, label='Poly Decision Boundary')
+plt.plot([], [], color="green", linewidth=3, label="Poly Decision Boundary")
 
 plt.title("2nd Degree Polynomial Decision Boundary")
 plt.xlabel("Payload Size (MB)")
@@ -467,5 +502,3 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig(os.path.join(images_dir, "poly_decision_boundary.png"))
 plt.close()
-
-
