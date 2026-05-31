@@ -5,17 +5,29 @@ In modern backend architecture, API endpoints often fail or "timeout" under heav
 1. **Payload Size (MB):** The amount of data being processed or transferred.
 2. **Concurrency Level:** The number of simultaneous requests hitting the server.
 
-When both payload and concurrency are low, the API easily succeeds. However, as they increase, the server's resources are strained, leading to timeouts. This project builds a **Logistic Regression model from scratch** (using raw NumPy) to predict whether an API request will Succeed (0) or Fail (1) based on these two features.
+When both payload and concurrency are low, the API easily succeeds. However, as they increase, the server's resources are strained, leading to timeouts. This project builds a **Logistic Regression model from scratch** (using raw NumPy) to predict whether an API request will Succeed (0) or Fail (1) based on these two features. I developed this project to deepen my understanding of **Gradient Descent**, **Feature Engineering**, and the underlying math of **Regression Models**.
 
 ## 💻 Main Parts of the Code
 The implementation deliberately avoids high-level ML libraries like `scikit-learn` to demonstrate the inner math and mechanics of machine learning:
 - **Data Generation & Split:** Synthetically generates 400 realistic data points with added Gaussian noise to simulate real-world ambiguity, then rigorously splits it 80/20 to prevent data leakage.
 - **Sigmoid & Prediction:** The core logistic function that maps linear combinations of features to a probability between 0 and 1.
+  - `sigmoid(z) = 1 / (1 + exp(-z))`
+  - `prediction(X, w, b) = sigmoid(X · w + b)`
 - **Cost Function (Binary Cross-Entropy):** Calculates the error of our predictions. It includes mathematical safeguards (`np.clip`) to prevent `log(0)` explosion.
+  - `calculate_loss = -y * log(pred) - (1 - y) * log(1 - pred)`
+  - `calculate_cost (J) = (1 / m) * Σ calculate_loss`
 - **Gradient Descent:** The optimization algorithm that iteratively updates weights (`w`) and bias (`b`) to minimize the cost.
+  - `dj_dw = (1 / m) * Σ (prediction - y) * X`
+  - `dj_db = (1 / m) * Σ (prediction - y)`
+  - `w = w - alpha * dj_dw`
+  - `b = b - alpha * dj_db`
 - **Feature Scaling (Z-Score Standardization):** Centers and scales the data. The parameters (μ, σ) are calculated *only* on the training set and applied to the test set to avoid leakage.
+  - `X_scaled = (X - mu) / sigma`
 - **L2 Regularization (Ridge):** Adds a penalty for large weights to prevent the model from overfitting to the training noise.
+  - `regularized_cost = J + (lambda_ / (2 * m)) * Σ w²`
+  - `dj_dw_regularized = dj_dw + (lambda_ / m) * w`
 - **Polynomial Feature Mapping:** Expands the 2D feature space into 5D (adding squares and interactions) to allow the model to learn curved, non-linear boundaries.
+  - `X_poly = [x1, x2, x1², x2², x1*x2]`
 
 ## 🏆 Best Performing Model
 After extensive hyperparameter tuning and feature engineering, the following configuration was identified as the most robust and accurate:
@@ -65,7 +77,7 @@ To run the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/moustafa-ash/API-Timeout-Predictor>
    cd "API Timeout Predictor"
    ```
 
