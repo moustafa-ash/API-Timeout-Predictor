@@ -1,5 +1,10 @@
 # API Timeout Predictor: Logistic Regression from Scratch
 
+## About This Project
+In modern ML engineering, relying solely on abstracted frameworks like scikit-learn can obscure the mechanical realities of the algorithms we deploy. This project serves as a technical portfolio piece demonstrating a deep, foundational understanding of machine learning mathematics and algorithm design.
+
+By building a Logistic Regression model entirely from scratch using raw NumPy, this repository tackles a highly relevant software engineering problem: predicting backend API timeouts based on payload and concurrency constraints. It showcases the end-to-end implementation of custom gradient descent, rigorous feature scaling, L2 regularization, and polynomial feature mapping to solve non-linear classification problems in system architecture.
+
 ## 🌍 The Real-World Problem
 In modern backend architecture, API endpoints often fail or "timeout" under heavy load. This project models a real-world scenario where an API's success or failure depends on two primary factors:
 1. **Payload Size (MB):** The amount of data being processed or transferred.
